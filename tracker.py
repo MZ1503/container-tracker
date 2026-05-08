@@ -11,7 +11,7 @@ client=OpenAI()
 container= input("Enter Container number:")
 
 shipping_rules="""
-EU PORTS DEMURRAGE & DETENTION RULES 2026:
+EU PORTS DEMURRAGE RULES 2026:
 
 MAIN PORTS FOR GERMAN COMPANIES:
 - Hamburg (DEHAM) — Germany biggest
@@ -73,7 +73,7 @@ CALCULATION RULES:
 messages=[
          { "role": "system",
            "content": f"""Hi LLM!. You are a logistics expert.You have to tell the user when it enters container number about the 
-                      status of the container in order to save demurrage and detention charges based on the 
+                      status of the container in order to save demurrage charges based on the 
                       shipping rules {shipping_rules}. Basically help the user to avoid the demurrage and detention risk."""},
 
                       {"role" : "user",
@@ -92,7 +92,74 @@ class ContainerStatus(BaseModel):
     free_days_used: int
     recommendation: str
     risk_level: str
+
+
+ #Tool function
+
+def get_container_status(container_number: str):
+    try:
+        response = requests.get(
+            f"https://api.track-trace.com/v1/{container_number}",
+            timeout=10
+        )
+        return response.json()
+    except:
+        return {"error": "API unavailable"}
+        
+
+# Tools definition
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_container_status",
+            "description": "Fetch live container tracking data",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "container_number": {
+                        "type": "string"
+                    }
+                },
+                "required": ["container_number"]
+            }
+        }
+    }
+]
+
     
+def track_container(container_number: str):
+    
+    while True:
+        response=client.chat.completions.create(
+         model="gpt-4o-mini",
+         messages=messages,
+         tools=tools
+      )
+    
+        if response.choices[0].finish_reason == "tool_calls":
+
+            tool_call=response.choices[0].message.tool_calls[0]
+            args=json.loads(tool_call.function.arguments)
+            result=get_container_status(args["container_number"])
+
+
+            messages.append(response.choices[0].message)
+            messages.append({
+            "role" : "tool",
+            "content" : json.dumps(result),
+            "tool_call_id" : tool_call.id
+             })
+
+        else: 
+            return response.choices[0].message.content
+
+
+
+result=track_container(container)
+print(result)
+
+
 
 
          
