@@ -1,15 +1,4 @@
 .env
-.venv/
-venv/   
-env/
+venv/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.ipynb_checkpoints/
-.vscode/
-.DB_Store/
-Thumbs.db   
-*-egg-info/
-dist/
-build/
