@@ -6,7 +6,7 @@ Upgraded from: single OpenAI tool-calling script
 Upgraded to:   LangGraph StateGraph with 2 nodes 
 
 Architecture:
-  [fetch_status] → [classify_risk] → [calculate_charges] → [recommend_action]
+  [fetch_status] -> [recommend_action]
 
 Why LangGraph over plain tool calling:
   - Each step has its own node which is easier to debug, test, extend
@@ -22,7 +22,7 @@ import os
 load_dotenv()
 
 # Config switch -using HuggingFace
-USE_HUGGINGFACE = True
+USE_HUGGINGFACE = False # Make it True to use HuggingFace Inference
 
 if USE_HUGGINGFACE:
     from huggingface_hub import InferenceClient
@@ -39,19 +39,19 @@ class ContainerState(TypedDict):
 
 # Node 1
 def fetch_status(state):
-    print(f"Container fetch ho raha hai: {state['container_number']}")
+    print(f"Fetching Container: {state['container_number']}")
     return {"recommendation": ""}
 
 # Node 2
 def recommend(state):
-    print("AI se recommendation le raha hai...")
+    print("Getting recommendation from AI...")
     
     if USE_HUGGINGFACE:
         response = ai_client.chat_completion(
             model="meta-llama/Llama-3.2-3B-Instruct",
             messages=[{
                 "role": "user",
-                "content": f"Container {state['container_number']} Hamburg port pe hai. Demurrage risk ek line mein batao."
+                "content": f"Container {state['container_number']} Container is at Hamburg port.Provide recommendation in one line."
             }],
             max_tokens=100
         )
@@ -61,7 +61,7 @@ def recommend(state):
             model="gpt-4o-mini",
             messages=[{
                 "role": "user",
-                "content": f"Container {state['container_number']} Hamburg port pe hai. Demurrage risk ek line mein batao."
+                "content": f"Container {state['container_number']} Container is at Hamburg port.Provide recommendation in one line."
             }]
         )
         answer = response.choices[0].message.content
