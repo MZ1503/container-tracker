@@ -8,7 +8,7 @@ I have worked in logistics and supply chain operation for several years and this
 
 ## Features
 
-- 2 node LangGraph pipeline
+- 4 node LangGraph pipeline
 - Supports OpenAI and HuggingFace with the help of config switch
 - Secure API key management via .env
 
@@ -40,7 +40,9 @@ I have worked in logistics and supply chain operation for several years and this
 ## Architecture
 
 -Node 1 - fetch status
--Node 2 - Take AI recommendation
+-Node 2 - Classify risk
+-Node 3-  Calculate Charges
+-Node 2 - AI recommendation
 
 
 ## Why support of two LLM's?
