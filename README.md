@@ -31,6 +31,7 @@ I have worked in logistics and supply chain operation for several years and this
 3. Add your API key
    Create .env file:
    OPENAI_API_KEY=your_key_here
+   Set USE_HUGGINGFACE=True for EU privacy-first deployment
 
 4. Run
    python tracker.py
