@@ -3,7 +3,7 @@ Container Tracker v2 — LangGraph Edition
 
 Author: Mariyam Zaidi
 Upgraded from: single OpenAI tool-calling script
-Upgraded to: LangGraph StateGraph with 2 nodes 
+Upgraded to: LangGraph StateGraph with 4 nodes 
 
 Architecture:
   fetch_status-> classify_risk -> calculate_charges -> recommend_action
