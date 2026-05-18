@@ -1,49 +1,65 @@
 ## AI Container Tracker - LangGraph Edition
 
-An AI agent that tracks shipping containers and provides demurrage risk recommendations for EU ports.
+An AI agent that tracks shipping containers and provides demurrage risk recommendations for EU ports.Built by a logistics operations professional who spent years tracking containers manually.
 
-## Why is this built?
+## Problem this project addresses
 
-I have worked in logistics and supply chain operation for several years and this project is out of firsthand experience of traclking container status manually. It takes many hours to track statuses.
+Tracking container status manually takes hours per day.
+Demurrage charges in EU ports average EUR 449 over 14 days.
+One missed alert and thousands in unnecessary charges.
 
-## Features
+## What This Does
+Automatically tracks a container number, classifies 
+demurrage risk, calculates charges, and gives 
+an AI-powered recommendation — in seconds.
 
-- 4 node LangGraph pipeline
-- Supports OpenAI and HuggingFace with the help of config switch
-- Secure API key management via .env
+## Architecture
+4-node LangGraph pipeline:
+
+Node 1 → Fetch live container status
+Node 2 → Classify risk (LOW / MEDIUM / HIGH / CRITICAL)  
+Node 3 → Calculate demurrage charges (Hamburg EU rules)
+Node 4 → AI recommendation to avoid charges
 
 ## Tech Stack
+- Python 3.11
+- LangGraph — stateful 4-node workflow
+- OpenAI GPT-4o-mini — risk classification + recommendations
+- HuggingFace Inference API — EU privacy-first alternative
+- python-dotenv — secure credential management
 
-- Python
-- LangChain, LangGraph
-- OpenAI GPT-4o-mini/ HuggingFace Inference (for privacy)
-- LangGraph StateGraph
-- Python-dotenv
+## Why Two LLM Options?
+German enterprise companies require data to stay in EU.
+HuggingFace option ensures GDPR-compliant, 
+privacy-first deployment for EU logistics companies.
 
 ## How to Run
 
-1. Clone the repo
-   git clone https://github.com/MZ1503/container-tracker
+### 1. Clone the repo
+git clone https://github.com/MZ1503/container-tracker
+cd container-tracker
 
-2. Install dependencies
-   pip install -r requirements.txt
+### 2. Create virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Mac/Linux
 
-3. Add your API key
-   Create .env file:
-   OPENAI_API_KEY=your_key_here
-   Set USE_HUGGINGFACE=True for EU privacy-first deployment
+### 3. Install dependencies
+pip install -r requirements.txt
 
-4. Run
-   python tracker.py
+### 4. Configure environment
+cp .env.example .env
+# Add your API key to .env
 
+### 5. Run
+python tracker.py
 
-## Architecture
+## Environment Variables
+Create a '.env' file based on '.env.example':
+OPENAI_API_KEY=your_key_here
+USE_HUGGINGFACE=False  # Set True for EU privacy deployment
 
--Node 1 - fetch status
--Node 2 - Classify risk
--Node 3-  Calculate Charges
--Node 2 - AI recommendation
+## Ports Covered
+Hamburg (DEHAM) · Bremerhaven (DEBRV) · 
+Rotterdam (NLRTM) · Antwerp (BEANR) · Duisburg (DEDUI)
 
-
-## Why support of two LLM's?
-German enterprise companies require data to stay in EU and this container tracker agent has been designed for EU based logistics companies. HuggingFace  ensures privacy-first deployment.
